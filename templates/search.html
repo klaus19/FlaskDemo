@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Search Bookmarks{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Search Bookmarks</h1>
+
+    <form method="GET" class="search-form">
+        <div class="search-row">
+            <div class="form-group">
+                <label for="q">Search All</label>
+                <input type="text" id="q" name="q" placeholder="Search everything..." value="{{ request.args.get('q', '') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="tag">Tag</label>
+                <input type="text" id="tag" name="tag" placeholder="python" value="{{ request.args.get('tag', '') }}">
+            </div>
+
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" placeholder="docs" value="{{ request.args.get('title', '') }}">
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="{{ url_for('search_page') }}" class="btn btn-secondary">Clear</a>
+    </form>
+
+    {% if results is not none %}
+        <div class="search-results">
+            <h3>Results ({{ results|length }})</h3>
+
+            {% if results %}
+                <div class="bookmarks-grid">
+                    {% for bookmark in results %}
+                        <div class="bookmark-card">
+                            <div class="bookmark-title">
+                                <a href="{{ bookmark.url }}" target="_blank">{{ bookmark.title }}</a>
+                            </div>
+                            <div class="bookmark-url">{{ bookmark.url }}</div>
+                            <div class="bookmark-tags">
+                                {% for tag in bookmark.tags %}
+                                    <span class="tag-small">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="empty-message">No bookmarks found matching your search.</p>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

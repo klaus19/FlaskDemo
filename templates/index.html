@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Bookmark Manager{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>My Bookmarks</h1>
+
+    <!-- Tags Summary -->
+    <div class="tags-section">
+        <h3>Tags</h3>
+        <div class="tags-cloud">
+            {% for tag in tags %}
+                <a href="{{ url_for('search_page') }}?tag={{ tag.name }}" class="tag">
+                    {{ tag.name }} ({{ tag.count }})
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Bookmarks List -->
+    <div class="bookmarks-section">
+        <h3>All Bookmarks ({{ bookmarks|length }})</h3>
+
+        {% if bookmarks %}
+            <div class="bookmarks-grid">
+                {% for bookmark in bookmarks %}
+                    <div class="bookmark-card">
+                        <div class="bookmark-title">
+                            <a href="{{ bookmark.url }}" target="_blank">{{ bookmark.title }}</a>
+                        </div>
+                        <div class="bookmark-url">{{ bookmark.url }}</div>
+                        <div class="bookmark-tags">
+                            {% for tag in bookmark.tags %}
+                                <span class="tag-small">{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="bookmark-actions">
+                            <a href="{{ url_for('edit_page', bookmark_id=bookmark.id) }}" class="btn btn-edit">Edit</a>
+                            <form action="{{ url_for('delete_bookmark_form', bookmark_id=bookmark.id) }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-message">No bookmarks yet. <a href="{{ url_for('add_page') }}">Add your first bookmark!</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
